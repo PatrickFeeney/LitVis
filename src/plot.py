@@ -4,20 +4,14 @@ from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 import numpy as np
 
-
-def geodetic_crop(geodetic_coords, padding=5):
-    min_coord = np.min(geodetic_coords, axis=0) - padding
-    max_coord = np.max(geodetic_coords, axis=0) + padding
-    return min_coord, max_coord
+from geodesy import geodetic_crop
 
 
 def plot_geodetic(loc_to_geodetic, sorted_unique_locs, loc_to_count,
                   min_coord=None, max_coord=None):
     # get names and geodetics for plotting
     locs = np.asarray(list(loc_to_geodetic.keys()))
-    # TODO fix coords layout
     geodetic_coords = np.asarray(list(loc_to_geodetic.values()))
-    geodetic_coords = geodetic_coords[:, [1, 0]]
     # remove any locations from geodetic that was not in parser
     loc_in_parser = np.isin(locs, sorted_unique_locs)
     locs = locs[loc_in_parser]
@@ -82,9 +76,7 @@ def plot_geodetic_annotated(loc_to_geodetic, sorted_unique_locs, loc_to_count):
 
 
 def plot_geodetic_anim(loc_to_geodetic, parser):
-    # TODO fix coords layout
     geodetic_coords = np.asarray(list(loc_to_geodetic.values()))
-    geodetic_coords = geodetic_coords[:, [1, 0]]
     min_coord, max_coord = geodetic_crop(geodetic_coords)
     # set up figure and axes
     fig = plt.figure()

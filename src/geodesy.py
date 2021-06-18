@@ -19,3 +19,14 @@ def loc_to_geodetic(fname):
     geodetics = geodetics[has_geodetics]
     loc_to_geodetic = {locs[i]: geodetics[i] for i in range(len(locs))}
     return loc_to_geodetic
+
+
+def geodetic_crop(geodetic_coords, padding=5):
+    min_coord = np.min(geodetic_coords, axis=0) - padding
+    max_coord = np.max(geodetic_coords, axis=0) + padding
+    return min_coord, max_coord
+
+
+def geodetic_date_to_count():
+    # TODO base this on transforms in plot_geodetic_anim
+    pass
