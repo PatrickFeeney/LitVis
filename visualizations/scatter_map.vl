@@ -37,7 +37,11 @@
           "field": "Long",
           "type": "quantitative"
         },
-        "size": {"value": 50},
+        "tooltip": {
+          "field": "City/Region",
+          "type": "nominal"
+        },
+        "size": {"value": 200},
         "color": {"value": "steelblue"}
       }
     }
