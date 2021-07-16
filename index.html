@@ -32,16 +32,19 @@
     <div class="container">
       <br>
       <h1>Vega-Lite Map Visualization Demo</h1>
-      <!-- Container for the visualization -->
-      <div id="vis"></div>
+      <!-- Containers for the visualization -->
+      <div id="scatter"></div>
+      <div id="chloropleth"></div>
     </div>
 
     <script>
-      // Assign the specification to a local variable vlSpec.
-      var vlSpec = "visualizations/scatter_map.vl"
+      // Assign the specifications to local variables
+      var vlScatter = "visualizations/scatter_map.vl";
+      var vlChloropleth = "visualizations/chloropleth_map.vl";
 
-      // Embed the visualization in the container with id `vis`
-      vegaEmbed('#vis', vlSpec);
+      // Embed the visualization in the container
+      vegaEmbed('#scatter', vlScatter);
+      vegaEmbed('#chloropleth', vlChloropleth);
     </script>
 
 </body>

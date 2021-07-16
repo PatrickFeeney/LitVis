@@ -1,20 +1,20 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "width": 1000,
-  "height": 1000,
+  "height": 600,
   "layer": [
     {
       "data": {
-        "url": "data/topojson/countries-110m.json",
+        "url": "data/topojson/Romanum_Admin.json",
         "format": {
           "type": "topojson",
-          "feature": "countries"
+          "feature": "Romanum_Admin"
         }
       },
       "projection": {
         "type": "equalEarth",
         "scale": 1000,
-        "center": [20, 50]
+        "center": [20, 37.5]
       },
       "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "gray"}
     },
@@ -25,7 +25,7 @@
       "projection": {
         "type": "equalEarth",
         "scale": 1000,
-        "center": [20, 50]
+        "center": [20, 37.5]
       },
       "mark": "circle",
       "encoding": {
