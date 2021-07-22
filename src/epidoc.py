@@ -1,7 +1,9 @@
-import os
+from pathlib import Path
 
 from lxml import etree
 import numpy as np
+
+import geodesy
 
 
 ignore_tokens = [
@@ -25,9 +27,11 @@ names_tokenized = [name.split(' ') for name in names]
 
 
 class EpiDocXMLParser():
-    def __init__(self, fname):
-        self.tree = etree.parse(fname)
+    def __init__(self, epidoc_fpath, geodetic_fpath):
+        self.epidoc_fpath = Path(epidoc_fpath)
+        self.geodetic_fpath = Path(geodetic_fpath)
         # get edition div, which contains all relevant info
+        self.tree = etree.parse(str(self.epidoc_fpath))
         edition_path = "./{*}text/{*}body/{*}div[@type='edition']"
         edition_divs = self.tree.findall(edition_path)
         if len(edition_divs) > 1:
@@ -63,21 +67,20 @@ class EpiDocXMLParser():
         self.loc_to_count = dict(zip(self.sorted_unique_locs, self.unique_loc_counts))
         # store unique dates as a sorted array
         self.unique_dates = self.unique(self.dateline_dates)
+        # get a dictionary mapping known locations to lat/long
+        self.loc_to_geodetic = geodesy.loc_to_geodetic(self.geodetic_fpath)
 
-    def save_csvs(self, label, folder="output"):
+    def save_csvs(self):
         """Save CSVs with data parsed from document
-
-        Args:
-            label (str): Label to prepend to CSV names
-            folder (str, optional): Folder to save CSVs in. Defaults to "output".
         """
-        path_stub = os.path.join(folder, label)
-        np.savetxt(path_stub + "dateline.csv", self.dateline_text[:, np.newaxis], fmt='"%s"',
+        path_stub = Path("data/output", self.epidoc_fpath.stem)
+        path_stub.mkdir(exist_ok=True)
+        np.savetxt(path_stub / "dateline.csv", self.dateline_text[:, np.newaxis], fmt='"%s"',
                    delimiter=',')
-        np.savetxt(path_stub + "locations.csv",
+        np.savetxt(path_stub / "locations.csv",
                    np.vstack((self.dateline_locs, self.dateline_text)).T,
                    fmt='"%s"', delimiter=',')
-        np.savetxt(path_stub + "sorted_locs.csv", self.sorted_unique_locs[:, np.newaxis],
+        np.savetxt(path_stub / "sorted_locs.csv", self.sorted_unique_locs[:, np.newaxis],
                    fmt='"%s"', delimiter=',')
         return
 
