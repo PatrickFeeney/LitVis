@@ -2,6 +2,7 @@ from pathlib import Path
 
 from lxml import etree
 import numpy as np
+import pandas as pd
 
 import geodesy
 
@@ -70,6 +71,13 @@ class EpiDocXMLParser():
         self.unique_dates = self.unique(self.dateline_dates)
         # get a dictionary mapping known locations to lat/long
         self.loc_to_geodetic = geodesy.loc_to_geodetic(self.geodetic_fpath)
+        # create a DataFrame collating parsed data
+        self.dataframe = self._create_dataframe()
+
+    def save_dataframe(self):
+        path_stub = Path("data/output", self.epidoc_fpath.stem)
+        path_stub.mkdir(exist_ok=True)
+        self.dataframe.to_csv(path_stub / "dateframe.csv", index=False)
 
     def save_csvs(self):
         """Save CSVs with data parsed from document
@@ -83,10 +91,26 @@ class EpiDocXMLParser():
                    fmt='"%s"', delimiter=',')
         np.savetxt(path_stub / "sorted_locs.csv", self.sorted_unique_locs[:, np.newaxis],
                    fmt='"%s"', delimiter=',')
-        return
 
     def unique(self, array, return_counts=False):
         return np.unique(array[np.not_equal(array, None)], return_counts=return_counts)
+
+    def _create_dataframe(self):
+        dateline_geodetic = np.array(
+            [self.loc_to_geodetic.get(loc, ["", ""]) for loc in self.dateline_locs])
+        dateline_loc_count = np.array(
+            [self.loc_to_count.get(loc, [""]) for loc in self.dateline_locs])
+        col_to_data = {
+            "edition": self.dateline_id[:, 0],
+            "book": self.dateline_id[:, 1],
+            "letter": self.dateline_id[:, 2],
+            "date": self.dateline_dates,
+            "location": self.dateline_locs,
+            "location_lat": dateline_geodetic[:, 1],
+            "location_long": dateline_geodetic[:, 0],
+            "location_count": dateline_loc_count,
+        }
+        return pd.DataFrame(col_to_data)
 
     def _parse_dateline_text(self):
         return np.asarray(
@@ -108,7 +132,7 @@ class EpiDocXMLParser():
         locations = []
         # get one location for every dateline
         for dateline in datelines:
-            location = None
+            location = ""
             # remove bad characters for easier parsing
             bad_chars = [",", ";"]
             for bad_char in bad_chars:
@@ -174,7 +198,7 @@ class EpiDocXMLParser():
                     pass
 
                 # stop if location is found
-                if location is not None:
+                if location != "":
                     break
                 i += 1
             locations.append(location)
@@ -205,9 +229,10 @@ class EpiDocXMLParser():
                     date = "-" + dateline_text[start_ind:end_ind]
             # convert str to int
             if date is not None:
-                date = int(date)
                 # convert to AUC
-                date += 754
+                date = str(int(date) + 754)
+            else:
+                date = ""
             dates.append(date)
         return np.asarray(dates)
 
