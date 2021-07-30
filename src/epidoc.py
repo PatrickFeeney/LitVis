@@ -77,7 +77,7 @@ class EpiDocXMLParser():
     def save_dataframe(self):
         path_stub = Path("data/output", self.epidoc_fpath.stem)
         path_stub.mkdir(exist_ok=True)
-        self.dataframe.to_csv(path_stub / "dateframe.csv", index=False)
+        self.dataframe.to_csv(path_stub / "dataframe.csv", index=False)
 
     def save_csvs(self):
         """Save CSVs with data parsed from document
