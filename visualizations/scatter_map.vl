@@ -20,7 +20,7 @@
     },
     {
       "data": {
-        "url": "data/input/loc_to_geodetic.csv"
+        "url": "data/output/phi0474.phi056.perseus-lat1/dataframe.csv"
       },
       "projection": {
         "type": "equalEarth",
@@ -30,18 +30,25 @@
       "mark": "circle",
       "encoding": {
         "latitude": {
-          "field": "Lat",
+          "field": "location_lat",
           "type": "quantitative"
         },
         "longitude": {
-          "field": "Long",
+          "field": "location_long",
           "type": "quantitative"
         },
         "tooltip": {
-          "field": "City/Region",
+          "field": "location",
           "type": "nominal"
         },
-        "size": {"value": 200},
+        "size": {
+          "field": "location_count",
+          "type": "quantitative",
+          "title": "Letter Count for Location",
+          "scale": {
+            "range": [100, 500]
+          }
+        },
         "color": {"value": "steelblue"}
       }
     }
