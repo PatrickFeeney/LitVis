@@ -56,6 +56,7 @@ class EpiDocXMLParser():
             ])
         )
         # store parsing outputs
+        self.dateline_id = self._parse_dateline_id()
         self.dateline_text = self._parse_dateline_text()
         self.dateline_locs = self._parse_dateline_locs()
         self.dateline_dates = self._parse_dateline_dates()
@@ -92,6 +93,15 @@ class EpiDocXMLParser():
             [etree.tostring(dateline, encoding=str, method="text").strip()
              for dateline in self.datelines]
         )
+
+    def _parse_dateline_id(self):
+        # store library.edition.language, book, and letter id
+        ids = []
+        for dateline in self.datelines:
+            letter = dateline.getparent().getparent()
+            book = letter.getparent()
+            ids.append([self.epidoc_fpath.stem, book.attrib["n"], letter.attrib["n"]])
+        return np.array(ids, dtype=str)
 
     def _parse_dateline_locs(self):
         datelines = self.dateline_text
