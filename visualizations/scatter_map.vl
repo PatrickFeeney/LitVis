@@ -42,14 +42,15 @@
           "type": "nominal"
         },
         "size": {
-          "field": "location_count",
+          "aggregate": "count",
+          "field": "location",
           "type": "quantitative",
           "title": "Letter Count for Location",
           "scale": {
             "range": [100, 500]
           }
         },
-        "color": {"value": "steelblue"}
+        "color": {"value": "#0000ff88"}
       }
     }
   ]
