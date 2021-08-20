@@ -1,0 +1,21 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "data/output/phi0474.phi056.perseus-lat1/dataframe.csv"
+  },
+  "width": 1000,
+  "height": 100,
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "date",
+      "type": "nominal"
+    },
+    "y": {
+      "aggregate": "count",
+      "field": "date",
+      "type": "quantitative"
+    }
+  }
+}
+  

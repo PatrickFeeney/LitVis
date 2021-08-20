@@ -34,17 +34,20 @@
       <h1>Vega-Lite Map Visualization Demo</h1>
       <!-- Containers for the visualization -->
       <div id="scatter"></div>
+      <div id="timeline"></div>
       <div id="chloropleth"></div>
     </div>
 
     <script>
       // Assign the specifications to local variables
-      var vlScatter = "visualizations/scatter_map.vl";
-      var vlChloropleth = "visualizations/chloropleth_map.vl";
+      var vl_scatter = "visualizations/scatter_map.vl";
+      var vl_timeline = "visualizations/timeline.vl";
+      var vl_chloropleth = "visualizations/chloropleth_map.vl";
 
       // Embed the visualization in the container
-      vegaEmbed('#scatter', vlScatter);
-      vegaEmbed('#chloropleth', vlChloropleth);
+      vegaEmbed('#scatter', vl_scatter);
+      vegaEmbed('#timeline', vl_timeline);
+      vegaEmbed('#chloropleth', vl_chloropleth);
     </script>
 
 </body>
