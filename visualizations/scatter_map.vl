@@ -2,6 +2,11 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "width": 1000,
   "height": 600,
+  "projection": {
+    "type": "equalEarth",
+    "scale": 1000,
+    "center": [20, 37.5]
+  },
   "layer": [
     {
       "data": {
@@ -11,21 +16,11 @@
           "feature": "Romanum_Admin"
         }
       },
-      "projection": {
-        "type": "equalEarth",
-        "scale": 1000,
-        "center": [20, 37.5]
-      },
       "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "gray"}
     },
     {
       "data": {
         "url": "data/output/phi0474.phi056.perseus-lat1/dataframe.csv"
-      },
-      "projection": {
-        "type": "equalEarth",
-        "scale": 1000,
-        "center": [20, 37.5]
       },
       "mark": "circle",
       "encoding": {
