@@ -15,7 +15,8 @@
       "aggregate": "count",
       "field": "date",
       "type": "quantitative"
-    }
+    },
+    "tooltip": [{"title": "Count", "aggregate": "count", "field": "date", "type": "quantitative"}]
   }
 }
   
