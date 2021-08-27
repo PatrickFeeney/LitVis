@@ -32,10 +32,10 @@
           "field": "location_long",
           "type": "quantitative"
         },
-        "tooltip": {
-          "field": "location",
-          "type": "nominal"
-        },
+        "tooltip": [
+          {"title": "Name", "field": "location"},
+          {"title": "Count", "aggregate": "count", "field": "topo_count", "type": "quantitative"}
+        ],
         "size": {
           "aggregate": "count",
           "field": "location",

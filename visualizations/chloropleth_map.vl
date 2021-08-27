@@ -30,8 +30,13 @@
       "color": {
         "field": "topo_count",
         "type": "quantitative",
-        "scale": {"scheme": "blues"}
-      }
+        "scale": {"scheme": "blues"},
+        "title": "Letter Count for Area"
+      },
+      "tooltip": [
+        {"title": "Name", "field": "properties.Name"},
+        {"title": "Count", "field": "topo_count", "type": "quantitative"}
+      ]
     }
   }
   
