@@ -4,7 +4,7 @@ from lxml import etree
 import numpy as np
 import pandas as pd
 
-import geodesy
+import location
 
 
 ignore_tokens = [
@@ -28,9 +28,10 @@ names_tokenized = [name.split(' ') for name in names]
 
 
 class EpiDocXMLParser():
-    def __init__(self, epidoc_fpath, geodetic_fpath):
+    def __init__(self, epidoc_fpath, geodetic_fpath, topo_fpath):
         self.epidoc_fpath = Path(epidoc_fpath)
         self.geodetic_fpath = Path(geodetic_fpath)
+        self.topo_fpath = Path(topo_fpath)
         # get edition div, which contains all relevant info
         self.tree = etree.parse(str(self.epidoc_fpath))
         edition_path = "./{*}text/{*}body/{*}div[@type='edition']"
@@ -69,8 +70,9 @@ class EpiDocXMLParser():
         self.loc_to_count = dict(zip(self.sorted_unique_locs, self.unique_loc_counts))
         # store unique dates as a sorted array
         self.unique_dates = self.unique(self.dateline_dates)
-        # get a dictionary mapping known locations to lat/long
-        self.loc_to_geodetic = geodesy.loc_to_geodetic(self.geodetic_fpath)
+        # get dictionaries mapping known locations to lat/long and topojson id
+        self.loc_to_geodetic = location.loc_to_geodetic(self.geodetic_fpath)
+        self.loc_to_topo = location.loc_to_topo(self.topo_fpath)
         # create a DataFrame collating parsed data
         self.dataframe = self._create_dataframe()
 
@@ -99,7 +101,17 @@ class EpiDocXMLParser():
         dateline_geodetic = np.array(
             [self.loc_to_geodetic.get(loc, ["", ""]) for loc in self.dateline_locs])
         dateline_loc_count = np.array(
-            [self.loc_to_count.get(loc, [""]) for loc in self.dateline_locs])
+            [self.loc_to_count.get(loc, 0) for loc in self.dateline_locs])
+        dateline_topo = np.array(
+            [self.loc_to_topo.get(loc, "") for loc in self.dateline_locs])
+        # aggregate counts for topojson ids
+        id_to_count = {}
+        for loc, id in self.loc_to_topo.items():
+            id = str(id)
+            id_to_count[id] = id_to_count.get(id, 0) + self.loc_to_count.get(loc, 0)
+        dateline_topo_count = np.array(
+            [id_to_count.get(id, 0) for id in dateline_topo])
+        # define dataframe columns
         col_to_data = {
             "edition": self.dateline_id[:, 0],
             "book": self.dateline_id[:, 1],
@@ -109,6 +121,8 @@ class EpiDocXMLParser():
             "location_lat": dateline_geodetic[:, 1],
             "location_long": dateline_geodetic[:, 0],
             "location_count": dateline_loc_count,
+            "topo_id": dateline_topo,
+            "topo_count": dateline_topo_count,
         }
         return pd.DataFrame(col_to_data)
 

@@ -27,6 +27,6 @@ def geodetic_crop(geodetic_coords, padding=5):
     return min_coord, max_coord
 
 
-def geodetic_date_to_count():
-    # TODO base this on transforms in plot_geodetic_anim
-    pass
+def loc_to_topo(fname):
+    df = pd.read_csv(fname)
+    return {df.iloc[i, 0]: df.iloc[i, 1] for i in range(df.shape[0])}

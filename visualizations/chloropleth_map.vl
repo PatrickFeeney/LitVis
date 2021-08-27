@@ -18,26 +18,17 @@
       "lookup": "id",
       "from": {
         "data": {
-          "url": "data/input/loc_to_topo_id.csv"
+          "url": "data/output/phi0474.phi056.perseus-lat1/dataframe.csv"
         },
-        "key": "id",
-        "fields": ["location"]
-      }
-    },{
-        "lookup": "location",
-        "from": {
-          "data": {
-            "url": "data/output/phi0474.phi056.perseus-lat1/dataframe.csv"
-          },
-          "key": "location",
-          "fields": ["location_count"]
-        },
-        "default": "0"
+        "key": "topo_id",
+        "fields": ["topo_count"]
+      },
+      "default": "0"
     }],
     "mark": {"type": "geoshape", "stroke": "gray"},
     "encoding": {
       "color": {
-        "field": "location_count",
+        "field": "topo_count",
         "type": "quantitative",
         "scale": {"scheme": "blues"}
       }
