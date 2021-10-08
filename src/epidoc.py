@@ -57,6 +57,14 @@ class EpiDocXMLParser():
                 self.sels["dateline"],
             ])
         )
+        self.letters = self.edition_div.findall(
+            self._rel_path([
+                self.sels["books"],
+                self.sels["letters"],
+            ])
+        )
+        self.letters_text = ["".join(letter.xpath("descendant-or-self::text()"))
+                             for letter in self.letters]
         # store parsing outputs
         self.dateline_id = self._parse_dateline_id()
         self.dateline_text = self._parse_dateline_text()
