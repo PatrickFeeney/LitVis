@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 ipykernel = "*"
+black = "==21.9b0"
 
 [packages]
 numpy = "*"
