@@ -1,4 +1,6 @@
+import csv
 import json
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -10,12 +12,8 @@ class NamedEntityCollectionExtractor:
     """
 
     def extract(self):
-        names = np.array(
-            pd.read_csv(
-                "data/output/phi0474.phi056.perseus-lat1/sorted_locs.csv", quotechar='"'
-            ),
-            dtype=str,
-        )[:, 0]
+        input_path = Path("data/output/phi0474.phi056.perseus-lat1/sorted_locs.csv")
+        names = [r[0] for r in csv.reader(input_path.open())]
         df = pd.read_csv("data/pleiades/pleiades-names.csv")
         namesTransliterated = np.array(df["nameTransliterated"], dtype=str)
         names_to_pids = {}
