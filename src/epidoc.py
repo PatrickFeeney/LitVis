@@ -68,7 +68,9 @@ class EpiDocXMLParser():
         # store parsing outputs
         self.dateline_id = self._parse_dateline_id()
         self.dateline_text = self._parse_dateline_text()
-        self.dateline_locs = self._parse_dateline_locs()
+        selections, locations = self._parse_selections_and_locs()
+        self.dateline_selections = selections
+        self.dateline_locs = locations
         self.dateline_dates = self._parse_dateline_dates()
         # store unique locations as a sorted array
         self.sorted_unique_locs, self.unique_loc_counts = self.unique(
@@ -125,6 +127,7 @@ class EpiDocXMLParser():
             "book": self.dateline_id[:, 1],
             "letter": self.dateline_id[:, 2],
             "date": self.dateline_dates,
+            "selection": self.dateline_selections,
             "location": self.dateline_locs,
             "location_lat": dateline_geodetic[:, 0],
             "location_long": dateline_geodetic[:, 1],
@@ -149,12 +152,14 @@ class EpiDocXMLParser():
             ids.append([self.epidoc_fpath.stem, book.attrib["n"], letter.attrib["n"]])
         return np.array(ids, dtype=str)
 
-    def _parse_dateline_locs(self):
+    def _parse_selections_and_locs(self):
         datelines = self.dateline_text
+        selections = []
         locations = []
         # get one location for every dateline
         for dateline in datelines:
             location = ""
+            selection = ""
             # remove bad characters for easier parsing
             bad_chars = [",", ";"]
             for bad_char in bad_chars:
@@ -171,21 +176,28 @@ class EpiDocXMLParser():
                     pass
                 # names not to modify
                 elif token in no_modify_locations:
+                    selection = token
                     location = token
                 elif next_token in no_modify_locations:
+                    selection = next_token
                     location = next_token
                 # parse words with uppercase first letter as location
                 elif token[0].isupper():
                     if token == "Patris":
                         # unsure about mapping
+                        selection = token
                         location = "Patra"
                     elif token[-2:] == "ae":
+                        selection = token
                         location = token[:-1]
                     elif token[-2:] == "is":
+                        selection = token
                         location = token[:-2] + "s"
                     elif token[-2:] == "ii":
+                        selection = token
                         location = token[:-1] + "um"
                     elif token[-1:] == "i":
+                        selection = token
                         location = token + "um"
                     else:
                         # raise ValueError("Unexpected dateline token for location: " + token)
@@ -198,22 +210,28 @@ class EpiDocXMLParser():
                             if name_token != tokens[i + k + 1]:
                                 break
                             elif k == len(name_tokens) - 1:
-                                location = names[j] + " house"
+                                house_name = names[j]
+                                selection = house_name
+                                location = f"{house_name} house"
                         if location is not None:
                             break
                     if location is None:
                         if next_token[0].isupper():
                             if next_token[-1] == "o":
+                                selection = token
                                 location = next_token[:-1] + "um"
                             else:
+                                selection = token
                                 location = next_token
                 # parse words after "ad"
                 elif token == "ad":
                     if next_token[0].isupper():
                         if next_token[-2:] == "um":
+                            selection = next_token
                             location = next_token[:-1] + "s"
                 # parse "ibidem"
                 elif token == "ibidem" or token == "ibid":
+                    selection = token
                     location = locations[-1]
                 else:
                     # raise ValueError("Unexpected dateline token: " + token)
@@ -223,8 +241,9 @@ class EpiDocXMLParser():
                 if location != "":
                     break
                 i += 1
+            selections.append(selection)
             locations.append(location)
-        return np.asarray(locations)
+        return np.asarray(selections), np.asarray(locations)
 
     def _parse_dateline_dates(self):
         dates = []
