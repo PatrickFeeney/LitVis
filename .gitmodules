@@ -1,3 +1,6 @@
 [submodule "src/submodules/canonical-latinLit"]
 	path = submodules/canonical-latinLit
 	url = https://github.com/PerseusDL/canonical-latinLit.git
+[submodule "submodules/text-analysis-for-ancient-and-medieval-languages"]
+	path = submodules/text-analysis-for-ancient-and-medieval-languages
+	url = https://github.com/wjbmattingly/text-analysis-for-ancient-and-medieval-languages
