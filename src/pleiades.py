@@ -26,3 +26,7 @@ class PleiadesLookup:
             index_list = np.where(name == self.namesTransliterated)[0]
             refs.append(index_list)
         return refs
+
+    def get_name_locs(self, names):
+        refs = self.get_name_refs(names)
+        return [self.df_filtered.iloc[ref][["reprLat", "reprLong"]].to_numpy() for ref in refs]
